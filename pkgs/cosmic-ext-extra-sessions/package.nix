@@ -16,7 +16,10 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     hash = "sha256-6JiWdBry63NrnmK3mt9gGSDAcyx/f6L5QsIgZSUakQI=";
   };
 
-  phases = [ "installPhase" ];
+  phases = [
+    "installPhase"
+    "fixupPhase"
+  ];
 
   installPhase = ''
     install -Dm0644 $src/niri/cosmic-ext-niri.desktop $out/share/wayland-sessions/cosmic-ext-niri.desktop
