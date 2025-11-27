@@ -6,7 +6,7 @@
 }:
 {
   environment.systemPackages = [
-    (callPackage ./pkgs/cosmic-ext-alternative-startup/package.nix { })
+    (pkgs.callPackage ./pkgs/cosmic-ext-alternative-startup/package.nix { })
   ];
 
   nixpkgs.overlays = [
