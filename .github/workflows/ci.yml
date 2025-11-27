@@ -21,4 +21,4 @@ jobs:
           name: drakon64
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
-      - run: nix-shell -A ci --run "nixos-generate --format iso --configuration ./default.nix -o result"
+      - run: nix-build -I nixos-config=live.nix
