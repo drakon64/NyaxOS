@@ -37,7 +37,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     --replace-fail "/usr/local/bin/start-cosmic-ext-niri" "$out/bin/start-cosmic-ext-niri"
     
     substituteInPlace $out/bin/start-cosmic-ext-niri \
-    --replace-fail "/usr/bin/cosmic-session niri" "${lib.getExe cosmic-session} ${lib.getExe niri}"
+    --replace-fail "/usr/bin/cosmic-session" "${lib.getExe cosmic-session}"
   '';
 
   passthru = {
