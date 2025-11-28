@@ -43,7 +43,11 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     --replace-fail "/usr/bin/cosmic-session niri" "${lib.getExe cosmic-session} ${lib.getExe niri}"
   '';
 
-  passthru.updateScript = nix-update-script { extraArgs = [ "--version=branch" ]; };
+  passthru = {
+    providedSessions = [ "cosmic-ext-niri" ];
+
+    updateScript = nix-update-script { extraArgs = [ "--version=branch" ]; };
+  };
 
   meta = {
     mainProgram = "cosmic-ext-extra-sessions";
