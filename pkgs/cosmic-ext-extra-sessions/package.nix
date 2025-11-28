@@ -2,8 +2,13 @@
   lib,
   fetchFromGitHub,
   stdenvNoCC,
-  just,
   nix-update-script,
+
+  systemd,
+  bash,
+  dbus,
+  cosmic-session,
+  niri,
 }:
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "cosmic-ext-extra-sessions";
@@ -18,12 +23,24 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
   phases = [
     "installPhase"
+    "postInstallPhase"
     "fixupPhase"
   ];
 
   installPhase = ''
     install -Dm0644 $src/niri/cosmic-ext-niri.desktop $out/share/wayland-sessions/cosmic-ext-niri.desktop
     install -Dm0755 $src/niri/start-cosmic-ext-niri $out/bin/start-cosmic-ext-niri
+  '';
+
+  postInstallPhase = ''
+    substituteInPlace $out/share/wayland-sessions/cosmic-ext-niri.desktop \
+    --replace-fail "/usr/local/bin/start-cosmic-ext-niri" "$out/bin/start-cosmic-ext-niri"
+
+    substituteInPlace $out/bin/start-cosmic-ext-niri \
+    --replace-fail "systemctl" "${systemd}/bin/systemctl" \
+    --replace-fail "exec bash" "exec ${lib.getExe bash}" \
+    --replace-fail "/usr/bin/dbus-run-session" "${dbus}/bin/dbus-run-session" \
+    --replace-fail "/usr/bin/cosmic-session niri" "${lib.getExe cosmic-session} ${lib.getExe niri}"
   '';
 
   passthru.updateScript = nix-update-script { extraArgs = [ "--version=branch" ]; };
