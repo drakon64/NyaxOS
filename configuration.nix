@@ -5,9 +5,8 @@
   ...
 }:
 {
-  environment.systemPackages = with pkgs; [
-    (callPackage ./pkgs/cosmic-ext-alternative-startup/package.nix { })
-    (callPackage ./pkgs/cosmic-ext-extra-sessions/package.nix { })
+  environment.systemPackages = [
+    (pkgs.callPackage ./pkgs/cosmic-ext-alternative-startup/package.nix { })
   ];
 
   nixpkgs.overlays = [
@@ -25,6 +24,10 @@
 
   services = {
     desktopManager.cosmic.enable = true;
-    displayManager.cosmic-greeter.enable = true;
+
+    displayManager = {
+      cosmic-greeter.enable = true;
+      sessionPackages = [ (pkgs.callPackage ./pkgs/cosmic-ext-extra-sessions/package.nix { }) ];
+    };
   };
 }
