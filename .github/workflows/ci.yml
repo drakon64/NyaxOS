@@ -31,7 +31,7 @@ jobs:
           name: drakon64
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
-      - run: nix-build -I nixos-config=live.nix
+      - run: nix-build -A iso -I nixos-config=live.nix
 
       - run: |
           ISO_FILE=(result/iso/*.iso)
@@ -39,7 +39,8 @@ jobs:
           echo ISO_NAME=$(echo "$ISO_FILE" | sed -e 's/result\/iso\///' -e 's/.iso$//') >> $GITHUB_ENV
         if: github.ref == 'refs/heads/main'
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload ISO
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.ISO_NAME }}
           path: ${{ env.ISO_FILE }}
