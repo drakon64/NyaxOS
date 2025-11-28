@@ -35,6 +35,9 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   postInstallPhase = ''
     substituteInPlace $out/share/wayland-sessions/cosmic-ext-niri.desktop \
     --replace-fail "/usr/local/bin/start-cosmic-ext-niri" "$out/bin/start-cosmic-ext-niri"
+    
+    substituteInPlace $out/bin/start-cosmic-ext-niri \
+    --replace-fail "/usr/bin/cosmic-session" "${lib.getExe cosmic-session}"
   '';
 
   passthru = {
