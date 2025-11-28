@@ -5,9 +5,13 @@
   ...
 }:
 {
-  environment.systemPackages = [
-    (pkgs.callPackage ./pkgs/cosmic-ext-alternative-startup/package.nix { })
-  ];
+  environment = {
+    etc."niri/config.kdl".source = lib.mkDefault ./resources/niri/config.kdl;
+
+    systemPackages = [
+      (pkgs.callPackage ./pkgs/cosmic-ext-alternative-startup/package.nix { })
+    ];
+  };
 
   nixpkgs.overlays = [
     (final: prev: {
