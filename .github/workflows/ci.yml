@@ -9,8 +9,14 @@ on:
 
 jobs:
   cosmic-ext:
-    runs-on: ubuntu-latest
-    
+    strategy:
+      matrix:
+        runs-on:
+          - ubuntu-latest
+          - ubuntu-24.04-arm
+
+    runs-on: ${{ matrix.runs-on }}
+
     steps:
       - uses: actions/checkout@v6
 
@@ -22,22 +28,18 @@ jobs:
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
       - run: nix-build -A cosmic-ext-alternative-startup -A cosmic-ext-extra-sessions
-  
+
   iso:
     needs:
       - cosmic-ext
-    
+
     strategy:
       matrix:
-        architecture:
-          - system: x86_64-linux
-            runner: ubuntu-latest
-            name: x86_64
-          - system: aarch64-linux
-            runner: ubuntu-24.04-arm
-            name: AArch64
-    
-    runs-on: ${{ matrix.architecture.runner }}
+        runs-on:
+          - ubuntu-latest
+          - ubuntu-24.04-arm
+
+    runs-on: ${{ matrix.runs-on }}
 
     steps:
       - uses: actions/checkout@v6
@@ -69,7 +71,7 @@ jobs:
   virtualbox:
     needs:
       - cosmic-ext
-    
+
     runs-on:
       - Linux
       - X64
@@ -77,7 +79,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-        
+
       - run: |
           sudo apt-get update
           sudo apt-get -y install qemu-system
