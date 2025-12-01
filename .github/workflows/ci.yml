@@ -49,17 +49,7 @@ jobs:
         if: github.ref == 'refs/heads/main'
 
   virtualbox:
-    strategy:
-      matrix:
-        architecture:
-          - system: x86_64-linux
-            runner: ubuntu-latest
-            name: x86_64
-          - system: aarch64-linux
-            runner: ubuntu-24.04-arm
-            name: AArch64
-
-    runs-on: ${{ matrix.architecture.runner }}
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v6
