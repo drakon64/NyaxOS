@@ -30,13 +30,17 @@ jobs:
         run: nix-shell -A lon --run "exit"
 
       - name: Evaluate with current lockfile
-        run: echo "CURRENT_HASH=$(nix eval --file default.nix --raw iso -I nixos-config=nixos/iso.nix)" >> "$GITHUB_ENV"
+        run: |
+          echo "CURRENT_ISO_HASH=$(nix eval --file default.nix --raw iso -I nixos-config=nixos/iso.nix)" >> "$GITHUB_ENV"
+          echo "CURRENT_VIRTUALBOX_HASH=$(nix eval --file default.nix --raw image -I nixos-config=nixos/virtualbox.nix)" >> "$GITHUB_ENV"
 
       - name: Update Lon lockfile
         run: nix-shell -A lon --run "lon update"
 
-      - name: Build and evaluate with updated lockfile
-        run: echo "NEW_HASH=$(nix-build -A iso -I nixos-config=live.nix)" >> "$GITHUB_ENV"
+      - name: Evaluate with updated lockfile
+        run: |
+          echo "NEW_ISO_HASH=$(nix eval --expr '(import ./default.nix {}).iso' -I nixos-config=nixos/iso.nix --raw --impure)" >> "$GITHUB_ENV"
+          echo "NEW_VIRTUALBOX_HASH=$(nix eval --expr '(import ./default.nix {}).image' -I nixos-config=nixos/virtualbox.nix --raw --impure)" >> "$GITHUB_ENV"
 
       - name: Open pull request
         run: |
