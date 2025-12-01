@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  iso:
     strategy:
       matrix:
         architecture:
@@ -31,7 +31,7 @@ jobs:
           name: drakon64
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
-      - run: nix-build -A iso -I nixos-config=live.nix
+      - run: nix-build -A iso -I nixos-config=nixos/iso.nix
 
       - run: |
           ISO_FILE=(result/iso/*.iso)
@@ -44,6 +44,46 @@ jobs:
         with:
           name: ${{ env.ISO_NAME }}
           path: ${{ env.ISO_FILE }}
+          compression-level: 0
+          if-no-files-found: error
+        if: github.ref == 'refs/heads/main'
+
+  virtualbox:
+    strategy:
+      matrix:
+        architecture:
+          - system: x86_64-linux
+            runner: ubuntu-latest
+            name: x86_64
+          - system: aarch64-linux
+            runner: ubuntu-24.04-arm
+            name: AArch64
+
+    runs-on: ${{ matrix.architecture.runner }}
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: samueldr/lix-gha-installer-action@v2025-10-27
+
+      - uses: cachix/cachix-action@v16
+        with:
+          name: drakon64
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+      - run: nix-build -A virtualbox -I nixos-config=nixos/virtualbox.nix
+
+      - run: |
+          VIRTUALBOX_APPLIANCE=(result/*.ova)
+          echo VIRTUALBOX_APPLIANCE=$VIRTUALBOX_APPLIANCE >> $GITHUB_ENV
+          echo VIRTUALBOX_APPLIANCE_NAME=$(echo "$VIRTUALBOX_APPLIANCE" | sed -e 's/result\///' -e 's/.ova//') >> $GITHUB_ENV
+        if: github.ref == 'refs/heads/main'
+
+      - name: Upload VirtualBox appliance
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.VIRTUALBOX_APPLIANCE_NAME }}
+          path: ${{ env.VIRTUALBOX_APPLIANCE }}
           compression-level: 0
           if-no-files-found: error
         if: github.ref == 'refs/heads/main'

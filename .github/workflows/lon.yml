@@ -30,7 +30,7 @@ jobs:
         run: nix-shell -A lon --run "exit"
 
       - name: Evaluate with current lockfile
-        run: echo "CURRENT_HASH=$(nix eval --file default.nix --raw iso -I nixos-config=live.nix)" >> "$GITHUB_ENV"
+        run: echo "CURRENT_HASH=$(nix eval --file default.nix --raw iso -I nixos-config=nixos/iso.nix)" >> "$GITHUB_ENV"
 
       - name: Update Lon lockfile
         run: nix-shell -A lon --run "lon update"

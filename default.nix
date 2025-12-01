@@ -1,10 +1,10 @@
 {
   pkgs ? import (import ./lon.nix).nixpkgs { },
-  nixos ? import "${(import ./lon.nix).nixpkgs}/nixos" { },
+  nixos ? "${(import ./lon.nix).nixpkgs}/nixos",
 }:
 {
-  iso = nixos.config.system.build.isoImage;
-  vm = nixos.vm;
+  image = (import nixos { }).config.system.build.image;
+  iso = (import nixos { }).config.system.build.isoImage;
 
   cosmic-ext-alternative-startup =
     pkgs.callPackage ./pkgs/cosmic-ext-alternative-startup/package.nix
