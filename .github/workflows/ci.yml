@@ -90,7 +90,7 @@ jobs:
             caches: cachix://drakon64
             access-tokens: cachix://drakon64=WRITE:${{ secrets.CACHIX_AUTH_TOKEN }}
 
-      - run: nix-build -A image -I nixos-config=nixos/virtualbox.nix --eval-store auto --store ssh-ng://eu.nixbuild.net
+      - run: nix-build -A image -I nixos-config=nixos/virtualbox.nix
 
       - run: |
           VIRTUALBOX_APPLIANCE=(result/*.ova)
