@@ -49,4 +49,4 @@ jobs:
         env:
           LON_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LON_LABELS: "lon,bot"
-        if: ${{ env.NEW_HASH != env.CURRENT_HASH }}
+        if: ${{ env.NEW_ISO_HASH != env.CURRENT_ISO_HASH || env.NEW_VIRTUALBOX_HASH != env.CURRENT_VIRTUALBOX_HASH }}
