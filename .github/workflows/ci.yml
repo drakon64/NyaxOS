@@ -76,30 +76,21 @@ jobs:
     needs:
       - cosmic-ext
 
-    runs-on:
-      - Linux
-      - X64
-      - self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v6
 
-      - run: |
-          sudo apt-get update
-          sudo apt-get -y install qemu-system
+      - uses: samueldr/lix-gha-installer-action@v2025-10-27
 
-      # TODO: Replace this with another action that supports KVM
-      - uses: DeterminateSystems/nix-installer-action@v21
+      - uses: nixbuild/nixbuild-action@v24
         with:
-          determinate: false
-          diagnostic-endpoint: ""
+          nixbuild_token: ${{ secrets.nixbuild_token }}
+          settings: |
+            caches: cachix://drakon64
+            access-tokens: cachix://drakon64=WRITE:${{ secrets.CACHIX_AUTH_TOKEN }}
 
-      - uses: cachix/cachix-action@v16
-        with:
-          name: drakon64
-          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-
-      - run: nix-build -A image -I nixos-config=nixos/virtualbox.nix
+      - run: nix-build -A image -I nixos-config=nixos/virtualbox.nix --eval-store auto --store ssh-ng://eu.nixbuild.net
 
       - run: |
           VIRTUALBOX_APPLIANCE=(result/*.ova)
