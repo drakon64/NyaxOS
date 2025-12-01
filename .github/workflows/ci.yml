@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "**.nix"
+      - lon.lock
+      - nixos/niri/config.kdl
 
   workflow_dispatch:
 
