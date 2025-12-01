@@ -10,9 +10,15 @@
     ./configuration.nix
   ];
 
-  services.displayManager.autoLogin = {
-    enable = true;
-    user = "nixos";
+  services.displayManager = {
+    autoLogin = {
+      enable = true;
+      user = "nixos";
+    };
+
+    cosmic-greeter.enable = lib.mkForce false;
+    defaultSession = "cosmic-ext-niri";
+    sddm.enable = true;
   };
 
   system.activationScripts.installerDesktop =
