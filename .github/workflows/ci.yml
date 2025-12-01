@@ -71,7 +71,7 @@ jobs:
           name: drakon64
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
-      - run: nix-build -A virtualbox -I nixos-config=nixos/virtualbox.nix
+      - run: nix-build -A image -I nixos-config=nixos/virtualbox.nix
 
       - run: |
           VIRTUALBOX_APPLIANCE=(result/*.ova)
