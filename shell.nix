@@ -6,4 +6,8 @@ pkgs.mkShellNoCC {
     lon
     nixfmt-rfc-style
   ];
+
+  passthru.lon = pkgs.mkShellNoCC {
+    packages = [ pkgs.lon ];
+  };
 }
