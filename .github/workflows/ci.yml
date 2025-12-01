@@ -84,7 +84,11 @@ jobs:
           sudo apt-get update
           sudo apt-get -y install qemu-system
 
-      - uses: samueldr/lix-gha-installer-action@v2025-10-27
+      # TODO: Replace this with another action that supports KVM
+      - uses: DeterminateSystems/nix-installer-action@v21
+        with:
+          determinate: false
+          diagnostic-endpoint: ""
 
       - uses: cachix/cachix-action@v16
         with:
