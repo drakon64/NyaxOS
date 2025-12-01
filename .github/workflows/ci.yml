@@ -8,7 +8,25 @@ on:
   workflow_dispatch:
 
 jobs:
+  cosmic-ext:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: samueldr/lix-gha-installer-action@v2025-10-27
+
+      - uses: cachix/cachix-action@v16
+        with:
+          name: drakon64
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+      - run: nix-build -A cosmic-ext-alternative-startup -A cosmic-ext-extra-sessions
+  
   iso:
+    needs:
+      - cosmic-ext
+    
     strategy:
       matrix:
         architecture:
@@ -49,6 +67,9 @@ jobs:
         if: github.ref == 'refs/heads/main'
 
   virtualbox:
+    needs:
+      - cosmic-ext
+    
     runs-on: ubuntu-latest
 
     steps:
