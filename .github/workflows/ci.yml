@@ -77,6 +77,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+        
+      - run: |
+          sudo apt-get update
+          sudo apt-get -y install qemu-system
 
       - uses: samueldr/lix-gha-installer-action@v2025-10-27
 
