@@ -10,9 +10,10 @@
     ./configuration.nix
   ];
 
-  users.users.nixos.initialPassword = "nixos";
-
-  services.displayManager.autoLogin.enable = false;
+  services.displayManager.autoLogin = {
+    enable = true;
+    user = "nixos";
+  };
 
   system.activationScripts.installerDesktop =
     let
