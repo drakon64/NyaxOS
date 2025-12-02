@@ -10,7 +10,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   src = fetchFromGitHub {
     owner = "Drakulix";
-    repo = finalAttrs.pname;
+    repo = "cosmic-ext-alternative-startup";
     rev = "8ceda00197c7ec0905cf1dccdc2d67d738e45417";
     hash = "sha256-0kqn3hZ58uQMl39XXF94yQS1EWmGIK45/JFTAigg/3M=";
   };

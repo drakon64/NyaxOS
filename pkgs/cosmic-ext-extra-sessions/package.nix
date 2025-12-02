@@ -16,7 +16,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
   src = fetchFromGitHub {
     owner = "Drakulix";
-    repo = finalAttrs.pname;
+    repo = "cosmic-ext-extra-sessions";
     rev = "66e065728d81eab86171e542dad08fb628c88494";
     hash = "sha256-6JiWdBry63NrnmK3mt9gGSDAcyx/f6L5QsIgZSUakQI=";
   };
