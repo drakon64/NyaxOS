@@ -63,7 +63,8 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     '';
 
   passthru = {
-    providedSessions = lib.optional enableMiracle "cosmic-ext-miracle" ++ lib.optional enableNiri "cosmic-ext-niri";
+    providedSessions =
+      lib.optional enableMiracle "cosmic-ext-miracle" ++ lib.optional enableNiri "cosmic-ext-niri";
 
     updateScript = nix-update-script { extraArgs = [ "--version=branch" ]; };
   };
