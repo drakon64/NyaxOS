@@ -76,16 +76,17 @@ jobs:
     needs:
       - cosmic-ext
 
-    strategy:
-      matrix:
-        runs-on:
-          - ubuntu-latest
-          - ubuntu-24.04-arm
-
-    runs-on: ${{ matrix.runs-on }}
+    runs-on:
+      - Linux
+      - X64
+      - self-hosted
 
     steps:
       - uses: actions/checkout@v6
+
+      - run: |
+          sudo apt-get update
+          sudo apt-get -y install qemu-system
 
       # TODO: Replace this with another action that supports KVM
       - uses: DeterminateSystems/nix-installer-action@v21
