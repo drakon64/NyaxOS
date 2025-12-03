@@ -9,6 +9,6 @@
     "${modulesPath}/virtualisation/virtualbox-image.nix"
     ./configuration.nix
   ];
-  
+
   virtualbox.memorySize = 2048;
 }
