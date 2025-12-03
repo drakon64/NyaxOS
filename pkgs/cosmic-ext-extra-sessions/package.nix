@@ -8,11 +8,11 @@
   bash,
   dbus,
   cosmic-session,
-  miracle-wm,
   niri,
+  sway,
 
-  enableMiracle ? true,
   enableNiri ? true,
+  enableSway ? true,
 }:
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "cosmic-ext-extra-sessions";
@@ -28,30 +28,20 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   installPhase = ''
     runHook preInstall
   ''
-  + lib.optionalString enableMiracle ''
-    install -Dm0644 $src/miracle/cosmic-ext-miracle.desktop $out/share/wayland-sessions/cosmic-ext-miracle.desktop
-    install -Dm0755 $src/miracle/start-cosmic-ext-miracle $out/bin/start-cosmic-ext-miracle
-  ''
   + lib.optionalString enableNiri ''
     install -Dm0644 $src/niri/cosmic-ext-niri.desktop $out/share/wayland-sessions/cosmic-ext-niri.desktop
     install -Dm0755 $src/niri/start-cosmic-ext-niri $out/bin/start-cosmic-ext-niri
+  ''
+  + lib.optionalString enableSway ''
+    install -Dm0644 $src/sway/cosmic-ext-sway.desktop $out/share/wayland-sessions/cosmic-ext-sway.desktop
+    install -Dm0755 $src/sway/start-cosmic-ext-sway $out/bin/start-cosmic-ext-sway
   ''
   + ''
     runHook postInstall
   '';
 
   postInstall =
-    lib.optionalString enableMiracle ''
-      substituteInPlace $out/share/wayland-sessions/cosmic-ext-miracle.desktop \
-      --replace-fail "/usr/bin/start-cosmic-ext-miracle" "$out/bin/start-cosmic-ext-miracle"
-
-      substituteInPlace $out/bin/start-cosmic-ext-miracle \
-      --replace-fail "systemctl" "${systemd}/bin/systemctl" \
-      --replace-fail "exec bash" "exec ${lib.getExe bash}" \
-      --replace-fail "/usr/bin/dbus-run-session" "${dbus}/bin/dbus-run-session" \
-      --replace-fail "/usr/bin/cosmic-session miracle-wm" "${lib.getExe cosmic-session} ${lib.getExe miracle-wm}"
-    ''
-    + lib.optionalString enableNiri ''
+    lib.optionalString enableNiri ''
       substituteInPlace $out/share/wayland-sessions/cosmic-ext-niri.desktop \
       --replace-fail "/usr/local/bin/start-cosmic-ext-niri" "$out/bin/start-cosmic-ext-niri"
 
@@ -60,11 +50,21 @@ stdenvNoCC.mkDerivation (finalAttrs: {
       --replace-fail "exec bash" "exec ${lib.getExe bash}" \
       --replace-fail "/usr/bin/dbus-run-session" "${dbus}/bin/dbus-run-session" \
       --replace-fail "/usr/bin/cosmic-session niri" "${lib.getExe cosmic-session} ${lib.getExe niri}"
+    ''
+    + lib.optionalString enableSway ''
+      substituteInPlace $out/share/wayland-sessions/cosmic-ext-sway.desktop \
+      --replace-fail "/usr/bin/start-cosmic-ext-sway" "$out/bin/start-cosmic-ext-sway"
+
+      substituteInPlace $out/bin/start-cosmic-ext-sway \
+      --replace-fail "systemctl" "${systemd}/bin/systemctl" \
+      --replace-fail "exec bash" "exec ${lib.getExe bash}" \
+      --replace-fail "/usr/bin/dbus-run-session" "${dbus}/bin/dbus-run-session" \
+      --replace-fail "/usr/bin/cosmic-session sway -c /etc/sway/config-cosmic" "${lib.getExe cosmic-session} ${lib.getExe sway}"
     '';
 
   passthru = {
     providedSessions =
-      lib.optional enableMiracle "cosmic-ext-miracle" ++ lib.optional enableNiri "cosmic-ext-niri";
+      lib.optional enableNiri "cosmic-ext-niri" ++ lib.optional enableSway "cosmic-ext-sway";
 
     updateScript = nix-update-script { extraArgs = [ "--version=branch" ]; };
   };
