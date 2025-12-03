@@ -8,8 +8,10 @@
   bash,
   dbus,
   cosmic-session,
+  miracle-wm,
   niri,
 
+  enableMiracle ? true,
   enableNiri ? true,
 }:
 stdenvNoCC.mkDerivation (finalAttrs: {
@@ -26,6 +28,10 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   installPhase = ''
     runHook preInstall
   ''
+  + lib.optionalString enableMiracle ''
+    install -Dm0644 $src/miracle/cosmic-ext-miracle.desktop $out/share/wayland-sessions/cosmic-ext-miracle.desktop
+    install -Dm0755 $src/miracle/start-cosmic-ext-miracle $out/bin/start-cosmic-ext-miracle
+  ''
   + lib.optionalString enableNiri ''
     install -Dm0644 $src/niri/cosmic-ext-niri.desktop $out/share/wayland-sessions/cosmic-ext-niri.desktop
     install -Dm0755 $src/niri/start-cosmic-ext-niri $out/bin/start-cosmic-ext-niri
@@ -34,16 +40,27 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     runHook postInstall
   '';
 
-  postInstall = lib.optionalString enableNiri ''
-    substituteInPlace $out/share/wayland-sessions/cosmic-ext-niri.desktop \
-    --replace-fail "/usr/local/bin/start-cosmic-ext-niri" "$out/bin/start-cosmic-ext-niri"
+  postInstall =
+    lib.optionalString enableMiracle ''
+      substituteInPlace $out/share/wayland-sessions/cosmic-ext-miracle.desktop \
+      --replace-fail "/usr/bin/start-cosmic-ext-miracle" "$out/bin/start-cosmic-ext-miracle"
 
-    substituteInPlace $out/bin/start-cosmic-ext-niri \
-    --replace-fail "systemctl" "${systemd}/bin/systemctl" \
-    --replace-fail "exec bash" "exec ${lib.getExe bash}" \
-    --replace-fail "/usr/bin/dbus-run-session" "${dbus}/bin/dbus-run-session" \
-    --replace-fail "/usr/bin/cosmic-session niri" "${lib.getExe cosmic-session} ${lib.getExe niri}"
-  '';
+      substituteInPlace $out/bin/start-cosmic-ext-miracle \
+      --replace-fail "systemctl" "${systemd}/bin/systemctl" \
+      --replace-fail "exec bash" "exec ${lib.getExe bash}" \
+      --replace-fail "/usr/bin/dbus-run-session" "${dbus}/bin/dbus-run-session" \
+      --replace-fail "/usr/bin/cosmic-session miracle-wm" "${lib.getExe cosmic-session} ${lib.getExe miracle-wm}"
+    ''
+    + lib.optionalString enableNiri ''
+      substituteInPlace $out/share/wayland-sessions/cosmic-ext-niri.desktop \
+      --replace-fail "/usr/local/bin/start-cosmic-ext-niri" "$out/bin/start-cosmic-ext-niri"
+
+      substituteInPlace $out/bin/start-cosmic-ext-niri \
+      --replace-fail "systemctl" "${systemd}/bin/systemctl" \
+      --replace-fail "exec bash" "exec ${lib.getExe bash}" \
+      --replace-fail "/usr/bin/dbus-run-session" "${dbus}/bin/dbus-run-session" \
+      --replace-fail "/usr/bin/cosmic-session niri" "${lib.getExe cosmic-session} ${lib.getExe niri}"
+    '';
 
   passthru = {
     providedSessions = lib.optional enableNiri "cosmic-ext-niri";
