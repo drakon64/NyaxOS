@@ -72,6 +72,45 @@ jobs:
           if-no-files-found: error
         if: github.ref == 'refs/heads/main'
 
+  qemu:
+    needs:
+      - cosmic-ext
+
+    strategy:
+      matrix:
+        runs-on:
+          - ubuntu-latest
+          - ubuntu-24.04-arm
+
+    runs-on: ${{ matrix.runs-on }}
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: samueldr/lix-gha-installer-action@v2025-10-27
+
+      - uses: cachix/cachix-action@v16
+        with:
+          name: drakon64
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+      - run: nix-build -A image -I nixos-config=nixos/qemu.nix
+
+      - run: |
+          QEMU_IMAGE=(result/iso/*.iso)
+          echo QEMU_IMAGE=$ISO_FILE >> $GITHUB_ENV
+          echo QEMU_IMAGE_NAME=$(echo "QEMU_IMAGE" | sed -e 's/result\///' -e 's/.iso$//') >> $GITHUB_ENV
+        if: github.ref == 'refs/heads/main'
+
+      - name: Upload QEMU image
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.QEMU_IMAGE_NAME }}
+          path: ${{ env.QEMU_IMAGE }}
+          compression-level: 0
+          if-no-files-found: error
+        if: github.ref == 'refs/heads/main'
+
   virtualbox:
     needs:
       - cosmic-ext
