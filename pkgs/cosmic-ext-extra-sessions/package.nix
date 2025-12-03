@@ -9,6 +9,8 @@
   dbus,
   cosmic-session,
   niri,
+
+  enableNiri ? true,
 }:
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "cosmic-ext-extra-sessions";
@@ -21,18 +23,18 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     hash = "sha256-6JiWdBry63NrnmK3mt9gGSDAcyx/f6L5QsIgZSUakQI=";
   };
 
-  phases = [
-    "installPhase"
-    "postInstallPhase"
-    "fixupPhase"
-  ];
-
   installPhase = ''
+    runHook preInstall
+  ''
+  + lib.optionalString enableNiri ''
     install -Dm0644 $src/niri/cosmic-ext-niri.desktop $out/share/wayland-sessions/cosmic-ext-niri.desktop
     install -Dm0755 $src/niri/start-cosmic-ext-niri $out/bin/start-cosmic-ext-niri
+  ''
+  + ''
+    runHook postInstall
   '';
 
-  postInstallPhase = ''
+  postInstall = lib.optionalString enableNiri ''
     substituteInPlace $out/share/wayland-sessions/cosmic-ext-niri.desktop \
     --replace-fail "/usr/local/bin/start-cosmic-ext-niri" "$out/bin/start-cosmic-ext-niri"
 
@@ -44,7 +46,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   '';
 
   passthru = {
-    providedSessions = [ "cosmic-ext-niri" ];
+    providedSessions = lib.optional enableNiri "cosmic-ext-niri";
 
     updateScript = nix-update-script { extraArgs = [ "--version=branch" ]; };
   };
