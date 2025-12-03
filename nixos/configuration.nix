@@ -45,4 +45,19 @@
       sessionPackages = [ (pkgs.callPackage ../pkgs/cosmic-ext-extra-sessions/package.nix { }) ];
     };
   };
+
+  system.activationScripts.installerDesktop =
+    let
+      homeDir = "/home/nixos/";
+
+      miracleConfigDir = homeDir + ".config/miracle-wm";
+      miracleConfig = ./miracle/config.yaml;
+    in
+    ''
+      mkdir -p ${miracleConfigDir}
+      chown nixos ${homeDir} ${miracleConfigDir}
+
+      cp ${miracleConfig} ${miracleConfigDir + "config.yaml"}
+      chown nixos ${miracleConfigDir + "config.yaml"}
+    '';
 }
