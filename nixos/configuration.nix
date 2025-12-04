@@ -5,13 +5,7 @@
   ...
 }:
 {
-  environment = {
-    etc."niri/config.kdl".source = lib.mkDefault ./niri/config.kdl;
-
-    systemPackages = [
-      (pkgs.callPackage ../pkgs/cosmic-ext-alternative-startup/package.nix { })
-    ];
-  };
+  environment.etc."niri/config.kdl".source = lib.mkDefault ./niri/config.kdl;
 
   nixpkgs.overlays = [
     (final: prev: {
@@ -27,7 +21,10 @@
   nix.package = pkgs.lixPackageSets.stable.lix;
 
   services = {
-    desktopManager.cosmic.enable = true;
+    desktopManager.cosmic = {
+      enable = true;
+      extraSessions.niri.enable = true;
+    };
 
     displayManager = {
       autoLogin = {
@@ -41,8 +38,6 @@
         enable = true;
         wayland.enable = true;
       };
-
-      sessionPackages = [ (pkgs.callPackage ../pkgs/cosmic-ext-extra-sessions/package.nix { }) ];
     };
   };
 }

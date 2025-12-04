@@ -4,12 +4,12 @@
     "nixpkgs": {
       "type": "GitHub",
       "fetchType": "tarball",
-      "owner": "NixOS",
+      "owner": "drakon64",
       "repo": "nixpkgs",
-      "branch": "nixos-25.11",
-      "revision": "8bb5646e0bed5dbd3ab08c7a7cc15b75ab4e1d0f",
-      "url": "https://github.com/NixOS/nixpkgs/archive/8bb5646e0bed5dbd3ab08c7a7cc15b75ab4e1d0f.tar.gz",
-      "hash": "sha256-SqUuBFjhl/kpDiVaKLQBoD8TLD+/cTUzzgVFoaHrkqY="
+      "branch": "cosmic-ext-extra-sessions",
+      "revision": "57b9702a72dafe8a1e0e62c17b2bfcd11aad6972",
+      "url": "https://github.com/drakon64/nixpkgs/archive/57b9702a72dafe8a1e0e62c17b2bfcd11aad6972.tar.gz",
+      "hash": "sha256-nUngM50Zv4bwXZejdpfS85RoSuU5sBP08mddEHFRPS4="
     }
   }
 }
