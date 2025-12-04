@@ -12,30 +12,30 @@ on:
   workflow_dispatch:
 
 jobs:
-  cosmic-ext:
-    strategy:
-      matrix:
-        runs-on:
-          - ubuntu-latest
-          - ubuntu-24.04-arm
-
-    runs-on: ${{ matrix.runs-on }}
-
-    steps:
-      - uses: actions/checkout@v6
-
-      - uses: canidae-solutions/lix-quick-install-action@v3
-
-      - uses: cachix/cachix-action@v16
-        with:
-          name: drakon64
-          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-
-      - run: nix-build -A cosmic-ext-alternative-startup -A cosmic-ext-extra-sessions
+#  cosmic-ext:
+#    strategy:
+#      matrix:
+#        runs-on:
+#          - ubuntu-latest
+#          - ubuntu-24.04-arm
+#
+#    runs-on: ${{ matrix.runs-on }}
+#
+#    steps:
+#      - uses: actions/checkout@v6
+#
+#      - uses: canidae-solutions/lix-quick-install-action@v3
+#
+#      - uses: cachix/cachix-action@v16
+#        with:
+#          name: drakon64
+#          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+#
+#      - run: nix-build -A cosmic-ext-alternative-startup -A cosmic-ext-extra-sessions
 
   iso:
-    needs:
-      - cosmic-ext
+#    needs:
+#      - cosmic-ext
 
     strategy:
       matrix:
