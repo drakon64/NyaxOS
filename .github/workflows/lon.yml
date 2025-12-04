@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Install Lix
-        uses: samueldr/lix-gha-installer-action@v2025-02-26.prerelease
+        uses: canidae-solutions/lix-quick-install-action@v3
 
       - name: Install Cachix
         uses: cachix/cachix-action@v16
@@ -32,7 +32,7 @@ jobs:
       - name: Evaluate with current lockfile
         run: |
           echo "CURRENT_ISO_HASH=$(nix eval --file default.nix --raw iso -I nixos-config=nixos/iso.nix)" >> "$GITHUB_ENV"
-          echo "CURRENT_VIRTUALBOX_HASH=$(nix eval --file default.nix --raw image -I nixos-config=nixos/virtualbox.nix)" >> "$GITHUB_ENV"
+#          echo "CURRENT_VIRTUALBOX_HASH=$(nix eval --file default.nix --raw image -I nixos-config=nixos/virtualbox.nix)" >> "$GITHUB_ENV"
 
       - name: Update Lon lockfile
         run: nix-shell -A lon --run "lon update"
@@ -40,7 +40,7 @@ jobs:
       - name: Evaluate with updated lockfile
         run: |
           echo "NEW_ISO_HASH=$(nix eval --expr '(import ./default.nix {}).iso' -I nixos-config=nixos/iso.nix --raw --impure)" >> "$GITHUB_ENV"
-          echo "NEW_VIRTUALBOX_HASH=$(nix eval --expr '(import ./default.nix {}).image' -I nixos-config=nixos/virtualbox.nix --raw --impure)" >> "$GITHUB_ENV"
+#          echo "NEW_VIRTUALBOX_HASH=$(nix eval --expr '(import ./default.nix {}).image' -I nixos-config=nixos/virtualbox.nix --raw --impure)" >> "$GITHUB_ENV"
 
       - name: Open pull request
         run: |
@@ -49,4 +49,5 @@ jobs:
         env:
           LON_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LON_LABELS: "lon,bot"
-        if: ${{ env.NEW_ISO_HASH != env.CURRENT_ISO_HASH || env.NEW_VIRTUALBOX_HASH != env.CURRENT_VIRTUALBOX_HASH }}
+        if: ${{ env.NEW_ISO_HASH != env.CURRENT_ISO_HASH }}
+#        if: ${{ env.NEW_ISO_HASH != env.CURRENT_ISO_HASH || env.NEW_VIRTUALBOX_HASH != env.CURRENT_VIRTUALBOX_HASH }}
