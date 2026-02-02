@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Install Lix
-        uses: canidae-solutions/lix-quick-install-action@v3
+        uses: samueldr/lix-gha-installer-action@v2025-02-26.prerelease
 
       - name: Install Cachix
         uses: cachix/cachix-action@v16
@@ -48,6 +48,6 @@ jobs:
           nix-shell -A lon --run "lon bot github"
         env:
           LON_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LON_LABELS: "lon,bot"
+          LON_LABELS: "dependencies,Nix"
         if: ${{ env.NEW_ISO_HASH != env.CURRENT_ISO_HASH }}
 #        if: ${{ env.NEW_ISO_HASH != env.CURRENT_ISO_HASH || env.NEW_VIRTUALBOX_HASH != env.CURRENT_VIRTUALBOX_HASH }}
